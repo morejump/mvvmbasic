@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.mvvmbasic.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -16,25 +17,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMainBinding
-    var viewModel = MainViewModel()
+
+    val viewModel: MainViewModel by lazy {
+        ViewModelProviders.of(this).get(MainViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
-        viewModel.name.observe(this, Observer {
+        viewModel.display.observe(this, Observer {
             Log.d("hellothere", it)
         })
+        viewModel.persons.observe(this, Observer {
+            Log.d("hellothere", "inside person: ${it.size}")
+        })
         binding.textDisplay.setText("")
-        binding.navigateButton.setOnClickListener {
-            //            intent = Intent(this, SecondActivity::class.java)
-//            intent.putExtra(KEY, "thao handsome")
-//            startActivity(intent)
-//            MyDialogFragment.createInstance().show(supportFragmentManager, "dialog")
-
-        }
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.container, FragmentContainer()).commit()
     }
 
 }
